@@ -1,0 +1,7 @@
+security reasons for a safer web dev.
+1. password theft- avoidedby using bcrypt package which store password using hashing.
+2.rate limiting- situation when there are like tons of request from the same server.
+can be avoided by using ratelimiter package that blocks the request from signle user.
+3.irrrelevant query or parameters-koi faltu ki query marega so , to avoid tht use npm package hpp 
+4.package sniffing.
+5.xsss-for wrong wuery parameters

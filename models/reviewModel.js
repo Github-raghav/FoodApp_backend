@@ -3,7 +3,9 @@ const mongoose=require("mongoose");
 // import {DBLink} from "../secret"
 let {DBLink} =require("../secret");
 // connection form.
-mongoose.connect(DBLink).then(function(db){
+mongoose.connect(DBLink,{useNewUrlParser: true,
+
+    useUnifiedTopology: true,}).then(function(db){
     console.log(db);
 }).catch(function(err){
     console.log("err",err);
@@ -30,14 +32,14 @@ const reviewSchema=new mongoose.Schema({
         default:Date.now
     },
     user:{
-        type:mongoose.Schema.objectId,  // hume user ki id store krni h sari review m
+        type:mongoose.Schema.ObjectId,  // hume user ki id store krni h sari review m
         ref:"userModel",// collection ka naam jha se id aaegyi
         // ref will be used in populate.
         //populate - ek id se aagr pura/kuch part user chahie 
         require:[true,"Review must belong to a user"]
     },
     plan:{
-        type:mongoose.Schema.objectId,
+        type:mongoose.Schema.ObjectId,
         ref:"PlanModel",
         required:[true,"Review must belong to a plan"]
     }

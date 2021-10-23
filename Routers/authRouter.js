@@ -4,6 +4,8 @@ const userModel=require("../models/userModel")
 const jwt=require("jsonwebtoken");
  const {JWT_KEY, JWT_TOKEN}=require("../secret")
 const authRouter=express.Router();
+const bcrypt=require("bcrypt")
+// bcrypt is npm package used for security reasons used to store password by hashing.
 let emailSender=require("./externalServices/emailSender")
 // const resetHandler=require("../models/userModel")
 
@@ -27,6 +29,9 @@ function setCreatedAt(req,res,next){
          async function signupUser(req,res){
             try{
                 // let {email,password,name}=req.body;
+                let password=req.body.password;
+                const salt=await bcrypt.genSalt(10);
+                req.body.password=await bcrypt.hash(req.body.password);
                 let userObj=req.body;
                 let user=await userModel.create(userObj);
                 console.log("user", userObj);
@@ -52,7 +57,8 @@ function setCreatedAt(req,res,next){
             let user=await userModel.findOne({"email":req.body.email})
             
                if(user){
-                   if(user.password==req.body.password){
+                   let areEqual=await bcrypt.compare(password,user.password)
+                   if(areEqual){
                     // creating jsonwebtoken.
                     //    header
                 let payload=user["_id"];

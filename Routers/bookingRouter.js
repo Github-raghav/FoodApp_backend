@@ -5,9 +5,11 @@ const bookingModel=require("../models/bookingModel")
 const reviewModel=require("../models/reviewModel")
 const userModel=require("../models/userModel")
 const factory=require("./externalServices/factory")
+const Razorpay=require('razorpay')
+const {KEY_ID,KEY_SECRET}=require("../secret")
 var instance = new Razorpay({
-    key_id: 'YOUR_KEY_ID',
-    key_secret: 'YOUR_KEY_SECRET',
+    key_id: KEY_ID,
+    key_secret: KEY_SECRET,
   })
 
 // const createReview=factory.createElement(bookingModel);
@@ -61,7 +63,7 @@ const initiateBooking=async function(req,res){
     const payment_capture=1;
     const currency="INR"
     const options={
-        amount=500,
+        amount:500,
         currency,
         receipt:`rs_${bookingId}`,
         payment_capture

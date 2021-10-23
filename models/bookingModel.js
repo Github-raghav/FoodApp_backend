@@ -10,15 +10,15 @@ mongoose.connect(DBLink).then(function(db){
 //syntax
 const bookingSchema=new mongoose.Schema({
 user:{
-    type:mongoose.Schema.objectId,
+    type:mongoose.Schema.ObjectId,
     required:true,
 },
 plan:{
-    type:mongoose.Schema.objectId,
+    type:mongoose.Schema.ObjectId,
     required:true,
 },
 bookedAt:{
-    type:Date
+    type:Date,
 },
 priceAtThatTime:{
 type:Number,

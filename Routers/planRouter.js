@@ -5,6 +5,11 @@ const protectRoute = require("./authHelper");
 const factory=require("./externalServices/factory");
 const {bodyChecker,authorizeUser}=require("./utilfns")
 
+const createPlan=factory.createElement(PlanModel);
+const getPlans=factory.getElements(PlanModel);  
+const updatePlan=factory.updateElements(PlanModel);
+const getPlanById=factory.getElementById(PlanModel);
+const deletePlan=factory.deleteElements(PlanModel);
 //   middleware-->middleware is aatma of express i.e very useful.
 planRouter.use(protectRoute)
 planRouter
@@ -51,7 +56,6 @@ async function getTop3Plans(req,res){
 //        })
 //    }
 // }
-const createPlan=factory.createElement(PlanModel);
 // async function getPlans(req,res){
 //     try{
 //         // sometimes there are tons of plans so fetching them would be problem
@@ -83,9 +87,7 @@ const createPlan=factory.createElement(PlanModel);
 
 //     }
 // }
-const getPlans=factory.getElements(PlanModel);  
 
-const updatePlan=factory.updateElements(PlanModel);
 // function updatePlan(req,res){
 //     try{
 //         await PlanModel.updateOne({name}.req.body);
@@ -97,8 +99,7 @@ const updatePlan=factory.updateElements(PlanModel);
 //         })
 //     }
 // }
-const getPlanById=factory.getElementById(PlanModel);
-const deletePlan=factory.deleteElements(PlanModel);
+
 
 // async function getPlanById(req,res){
 //  try{
