@@ -1,3 +1,5 @@
+const userModel=require("../models/userModel")
+
 module.exports.bodyChecker=function bodyChecker(req,res,next){
     console.log("reached bodychecker");
     let isPresent=Object.keys(req.body).length;
@@ -9,13 +11,16 @@ module.exports.bodyChecker=function bodyChecker(req,res,next){
     }
 }
 
-module.exports.authorizeUser=function authorizeUser(roles){
+module.exports.authorizeUser=function (roles){
     return  async function(req,res,next){
-        let uid=req.uid;
+        let {userId}=req;
+        // console.log(req);
+        console.log(userId);
         try{
-            let {role}=await userModel.findById(uid);
-            let isAuthorized= roles.includes(role);
+            let user=await userModel.findById(userId);
+            let isAuthorized= roles.includes(user.role);
             if(isAuthorized){
+                // req.user=user
                 next();
             }else{
                 res.status(403).json({
@@ -25,8 +30,9 @@ module.exports.authorizeUser=function authorizeUser(roles){
         }catch(err){
           console.log(err);
           res.status(500).json({
-              message:"server error"
+              message:err.message
           })
+          console.log(err);
         }
         }
     

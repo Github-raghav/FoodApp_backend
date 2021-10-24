@@ -4,7 +4,7 @@ const userModel=require("../models/userModel")
 const jwt=require("jsonwebtoken");
  const {JWT_KEY, JWT_TOKEN}=require("../secret")
 const authRouter=express.Router();
-const bcrypt=require("bcrypt")
+const bcrypt = require("bcrypt");
 // bcrypt is npm package used for security reasons used to store password by hashing.
 let emailSender=require("./externalServices/emailSender")
 // const resetHandler=require("../models/userModel")
@@ -29,32 +29,30 @@ function setCreatedAt(req,res,next){
          async function signupUser(req,res){
             try{
                 // let {email,password,name}=req.body;
-                let password=req.body.password;
-                const salt=await bcrypt.genSalt(10);
-                req.body.password=await bcrypt.hash(req.body.password);
                 let userObj=req.body;
                 let user=await userModel.create(userObj);
-                console.log("user", userObj);
+                console.log("user", user);
                 // user.push({
                 //     email,password,name
                 // })
                 res.status(200).json({
                     message:"user created",
-                    createdUser:req.body
+                    createdUser:user
                 })
             }catch(error){
                res.status(500).json({
                    message:error.message
                 })
-                console.log(message);
+                console.log(error)
             }
         }
          async function loginUser(req,res){
-        // let {email,password}=req.body;
-        
-        try{
-            if(req.body.email){
-            let user=await userModel.findOne({"email":req.body.email})
+             
+             try{
+            let {email,password}=req.body;
+            // if(req.body.email){
+                console.log(email);
+            let user=await userModel.findOne({email})
             
                if(user){
                    let areEqual=await bcrypt.compare(password,user.password)
@@ -63,7 +61,7 @@ function setCreatedAt(req,res,next){
                     //    header
                 let payload=user["_id"];
               let token= jwt.sign({id:payload},JWT_KEY);
-                       res.cookie("test",token,{httpOnly:true});
+                       res.cookie("jwt",token,{httpOnly:true});
                      return  res.status(200).json({
                            message:"user loggedin",
                            user:user
@@ -75,18 +73,19 @@ function setCreatedAt(req,res,next){
                }
             }else{
                 return res.status(401).json({
-                    "message":"invalid email or password"
+                    message:"user not found with creds"
                 })
             }
-            }else{
-                return res.status(403).json({
-                    message:"email not present"
-                })
-            }
+            // }else{
+            //     return res.status(403).json({
+            //         message:"email not present"
+            //     })
+            // }
         }catch(error){
              return res.status(500).json({
-                message:"invalid email or password"
+                message:error.message
             })
+            console.log(error);
         }
   
         }
@@ -94,29 +93,30 @@ function setCreatedAt(req,res,next){
 // fir jb otp chla jaega  via mail or phone , then reset wala page khulega.
 // 
         async function forgetPassword(req,res){
-            let email=req.body.email; // email nikal lia body m se.
-            // code  for generating 4 digit random otp number
-            let seq=(Math.floor(Math.random()*10000)+10000).toString().substring(1);
-            console.log(seq);
             try{
-                if(email){
-                    await userModel.updateOne({email},{token:seq});
-                    let user=await userModel.findOne({email});
+                let email=req.body.email; // email nikal lia body m se.
+                let user=await userModel.findOne({email});
+                if(user){
+                    // code  for generating 4 digit random otp number
+                    let seq=(Math.floor(Math.random()*10000)+10000).toString().substring(1);
+                    console.log(seq);
+                    await userModel.updateOne({email},{seq});
+                    let newuser=await userModel.findOne({email});
                      await emailSender(seq,user.email);
-                    console.log(user);
-                    if(user?.token){
+                    console.log(newuser);
+                    // if(user?.token){
                         return res.status(200).json({
-                            message:"Email send with token" + seq
+                            message:"user token sent to your email" + seq
 
                         })
-                    }else{
-                        return res.status(404).json({
-                            message:"user not found"
-                        })
-                    }
+                    // }else{
+                    //     return res.status(404).json({
+                    //         message:"user not found"
+                    //     })
+                    // }
                 }else{
-                    return res.status(400).json({
-                        message:"Kindly enter email"
+                    return res.status(404).json({
+                        message:"user not found"
                     })
                 }
             }catch(err){
@@ -126,22 +126,25 @@ function setCreatedAt(req,res,next){
             }
         }
         async function resetPassword(req,res){
-            let{token,password,confirmPassword}=req.body;
             try{
-                if(token){
-                    let user=await userModel.findOne({token});
-                    if(user){
-                        user.resetHandler(password,confirmPassword);
+                let{token,password,confirmPassword}=req.body;
+                let user=await userModel.findOne({token});
+                if(user){
+                    // let user=await userModel.findOne({token});
+                    // if(user){
+                       user.resetHandler(password,confirmPassword);
                         //saving user in database
                         await user.save();
+                        let newuser=await userModel.findOne({email:user.email})
                         res.status(200).json({
-                            message:"user password changed"
+                            message:"user password changed",
+                            user:newuser
                         })
-                    }else{
-                        return res.status(404).json({
-                            message:"incorrect token"
-                        })
-                    }
+                    // }else{
+                    //     return res.status(404).json({
+                    //         message:"incorrect token"
+                    //     })
+                    // }
                 }else{
                     return res.status(404).json({
                         message:"user not found"

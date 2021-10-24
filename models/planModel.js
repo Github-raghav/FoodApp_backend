@@ -1,10 +1,13 @@
 const mongoose=require("mongoose");
 const emailValidator=require("email-validator")
 // import {DBLink} from "../secret"
-let {DBLink} =require("../secret");
+const {APP_PASSWORD}=require("../secret")
+let DBLink=`mongodb+srv://admin:${APP_PASSWORD}@cluster0.utwxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// let {DBLink} =require("../secret");
 // connection form.
 mongoose.connect(DBLink).then(function(db){
-    console.log(db);
+    console.log("plans connected");
+    //console.log(db);
 }).catch(function(err){
     console.log("err",err);
 })

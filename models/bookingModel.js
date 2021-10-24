@@ -1,9 +1,11 @@
 const mongoose=require("mongoose");
 
-let {DBLink} =require("../secret");
+let {APP_PASSWORD} =require("../secret");
+let DBLink=`mongodb+srv://admin:${APP_PASSWORD}@cluster0.utwxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 // connection form.
 mongoose.connect(DBLink).then(function(db){
-    console.log(db);
+    // console.log(db);
+    console.log("booking DB");
 }).catch(function(err){
     console.log("err",err);
 })

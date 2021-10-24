@@ -2,13 +2,14 @@ const express=require("express");
 const app=express();
 const cookieParser = require('cookie-parser') // cookie parser is used to read the cookie.
 // used to accept all the request of posts.
-const rateLimit = require("express-rate-limit");
-const hpp=require("hpp")
-const helmet=require("helmet")
-const xss=require("xss-clean")
-const mongoSanitize = require('express-mongo-sanitize');
+// const rateLimit = require("express-rate-limit");
+// const hpp=require("hpp")
+// const helmet=require("helmet")
+// const xss=require("xss-clean")
+// const mongoSanitize = require('express-mongo-sanitize');
 app.use(express.static('public'))
 // line4 says - jo bhi files aapki public folder m hongi n usnko access  show krega. i.e jb inspect m jake sources m jo files show hoti h vo vhi h jo public foleder m ho.
+app.use(express.json());
 app.use(cookieParser());
 
 // app.get("/",function(req,res){
@@ -19,24 +20,23 @@ app.use(cookieParser());
         name:"raghav"
     }
     
-    app.use(rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 100 ,
-        message:"Too many accounts created from this IP, please try again after an hour"
-    }))
+    // app.use(rateLimit({
+    //     windowMs: 15 * 60 * 1000, // 15 minutes
+    //     max: 100 ,
+    //     message:"Too many accounts created from this IP, please try again after an hour"
+    // }))
     
-    app.use(hpp({
-        whiteList:[
-            'select',
-            'page',
-            'sort',
-            'myquery'
-        ]
-    }))
-    app.use(helmet()) // to set http headers
-    app.use(express.json());
-    app.use(xss());
-    app.use(mongoSanitize());
+    // app.use(hpp({
+    //     whiteList:[
+    //         'select',
+    //         'page',
+    //         'sort',
+    //         'myquery'
+    //     ]
+    // }))
+    //app.use(helmet()) // to set http headers
+   // app.use(xss());
+    //app.use(mongoSanitize());
 // frontend se jo request aati h vo yha p aati h.
 // async function getusers(req,res){
 //     try{

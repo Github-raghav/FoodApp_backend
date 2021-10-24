@@ -1,9 +1,9 @@
-module.exports.createElement=function(ElementModel){
+module.exports.createElement= function(ElementModel){
     return   async  function (req,res){
         try{
-     let element=req.body;
-     if(element){
-         element=await ElementModel.create(plan);
+            let element=req.body
+            if(element){
+          element=await ElementModel.create(element);
          res.status(200).json({
              element:element
          })
@@ -15,8 +15,9 @@ module.exports.createElement=function(ElementModel){
         }catch(err){
        console.log(err);
        res.status(500).json({
-           message:"Server error"
+           message:"Server error 1"
        })
+       console.log(err);
         }
     }
 }
@@ -108,11 +109,11 @@ module.exports.updateElements=function(ElementModel){
                 element[key]=req.body[key];
             }
             await element.save();
-            res.status(200).json(element);
+            res.status(200).json({element});
             
         }else{
             res.status(404).json({
-                message:"resourse not found"
+                message:"element not found"
             })
         }
     }catch(err){
@@ -134,7 +135,7 @@ module.exports.getElementById=function(ElementModel){
     }catch(err){
         console.log(err);
         res.status(500).json({
-            message:"Server error"
+            message:"Server error1"
         })
     }
    }

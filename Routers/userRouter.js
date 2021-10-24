@@ -3,23 +3,24 @@ const userModel=require("../models/userModel")
 const userRouter=express.Router();
 const protectRoute=require("../Routers/authHelper");
 const factory=require("./externalServices/factory")
+const{createElement,getElements}=require("./externalServices/factory")
 const bodyChecker=require("../Routers/utilfns");
-// const authorizeuser=require("./utilfns")
+const {authorizeUser}=require("./utilfns")
 
-const createUser=factory.createElement(userModel);
-const getusers=factory.getElements(userModel);
+const createUser=createElement(userModel);
+const getusers=getElements(userModel);
 const deleteUser=factory.deleteElements(userModel);
 const updateUser=factory.updateElements(userModel);
 const getUserById=factory.getElementById(userModel);
 
-
+userRouter.use(protectRoute)
 userRouter.route("/")
-       .post(protectRoute,authorizeuser(["admin"]),createUser)
-       .get(protectRoute,authorizeuser(["admin"]),getusers) // protectRoute is a middleware .  it works as privateRouting as in react
+       .post(protectRoute,authorizeUser(["admin","user"]),createUser)
+       .get(protectRoute,authorizeUser(["admin"]),getusers) // protectRoute is a middleware .  it works as privateRouting as in react
 userRouter.route("/:id")
        .get(getUserById)
-       .patch(authorizeuser(["admin"]),updateUser)
-       .delete(authorizeuser(["admin"]),deleteUser)
+       .patch(authorizeUser(["admin"]),updateUser)
+       .delete(authorizeUser(["admin"]),deleteUser)
        
 
     //    async function getusers(req,res){
@@ -93,19 +94,19 @@ userRouter.route("/:id")
     //  })
     // }
     
-    function authorizeuser(rolesArr){
-        return async function(req,res,next){
-        let uid=req.uid;
-        let {role}=await userModel.findById(uid);
-        let isAuthorized= rolesArr.includes(role);
-        if(isAuthorized){
-            next();
-        }else{
-            res.status(403).json({
-                message:"unauthorized user"
-            });
-        }
-        }
-    }
+    // function authorizeuser(rolesArr){
+    //     return async function(req,res,next){
+    //     let uid=req.uid;
+    //     let {role}=await userModel.findById(uid);
+    //     let isAuthorized= rolesArr.includes(role);
+    //     if(isAuthorized){
+    //         next();
+    //     }else{
+    //         res.status(403).json({
+    //             message:"unauthorized user"
+    //         });
+    //     }
+    //     }
+    // }
 
        module.exports=userRouter

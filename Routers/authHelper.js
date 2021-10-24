@@ -3,11 +3,13 @@ const {JWT_KEY}=require("../secret")
 function protectRoute(req,res,next){
     // let flag=req.cookie.test;
     try{
-      if(req.cookie.jwt){
+      if(req.cookies.jwt){
+          console.log(req.cookies.jwt);
           let isVerified=jwt.verify(req.cookies.jwt,JWT_KEY)
           if(isVerified){
               console.log(isVerified);
-            req.uid=isVerified.id
+            let userId=isVerified.id
+            req.userId=userId;
               next();
           }
       }else{
@@ -17,8 +19,9 @@ function protectRoute(req,res,next){
       }
     }catch(error){
         res.status(500).json({
-            message:"server error"
+            message:error.message
         })
+        console.log(error);
     }
 }
 module.exports=protectRoute;

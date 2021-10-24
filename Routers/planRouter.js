@@ -3,6 +3,7 @@ const planRouter=express.Router();
 const PlanModel=require("../models/planModel");
 const protectRoute = require("./authHelper");
 const factory=require("./externalServices/factory");
+const {createElement}=require("./externalServices/factory");
 const {bodyChecker,authorizeUser}=require("./utilfns")
 
 const createPlan=factory.createElement(PlanModel);
@@ -14,8 +15,8 @@ const deletePlan=factory.deleteElements(PlanModel);
 planRouter.use(protectRoute)
 planRouter
          .route("/") // here setcreatedat acts as a middleware
-         .post(bodyChecker,authorizeUser(["admin"]),createPlan)
-         .get(protectRoute,authorizeUser(["admin","ce"]),getPlans)
+         .post(bodyChecker,authorizeUser(["user"]),createPlan)
+         .get(protectRoute,authorizeUser(["admin","user","ce"]),getPlans)
          //****************************/
  planRouter
          .route("/:id")
@@ -27,17 +28,17 @@ planRouter.route("/topplans").get(getTop3Plans)
 
 async function getTop3Plans(req,res){
         try {
-         let plans=await PlanModel.find().limit(3).sort({
-                 averageRating:-1
-         }).populate({path:'reviews',select:'review rating'})
+         let plans=await PlanModel.find().sort("- averageRating")
+         .populate({path:'reviews',select:'review rating'})
          console.log(plans);
          res.status(200).json({
                  plans
          })
         } catch (error) {
          res.status(200).json({
-           message:err.message
+           message:error.message
          })       
+         console.log(error);
         }
 }
 

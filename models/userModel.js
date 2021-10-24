@@ -2,10 +2,16 @@ const mongoose=require("mongoose");
 const bcrypt =require("bcrypt")
 const emailValidator=require("email-validator")
 // import {DBLink} from "../secret"
-let {DBLink} =require("../secret");
+const {APP_PASSWORD}=require("../secret")
+console.log(APP_PASSWORD);
+let DBLink=`mongodb+srv://admin:${APP_PASSWORD}@cluster0.utwxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 // connection form.
-mongoose.connect(DBLink).then(function(db){
-    console.log(db);
+mongoose.connect(DBLink,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+}).then(function(db){
+    // console.log(db);
+    console.log("user DB");
 }).catch(function(err){
     console.log("err",err);
 })
@@ -56,18 +62,18 @@ const userSchema=new mongoose.Schema({
 })
 
 // pre function -> databse m store krne se pehle yeh function chlta h,i.e confirmedPass save krne ki jrrort ni h so usok undefined kr dia.
-userSchema.pre("save",function(next){
+userSchema.pre("save",async function(next){
     const salt=await bcrypt.genSalt(10);
-    req.body.password=await bcrypt.hash(this.password,salt);
+    this.password=await bcrypt.hash(this.password,salt);
     this.confirmPassword=undefined
     next();
 })
 // creating our own methods / middleware
 // through methods feature we can create our own function of entity.
-userSchema.methods.resetHandler=function(password,confirmPassword){
+userSchema.methods.resetHandler= async function(password,confirmPassword){
     const salt=await bcrypt.genSalt(10);
-    req.body.password=await bcrypt.hash(this.password,salt);
-    this.password=password;
+    this.password=await bcrypt.hash(this.password,salt);
+    // this.password=password;
     this.confirmPassword=confirmPassword;
     // token ko undefined krdo taki reuse n kr paee.
     this.token=undefined
