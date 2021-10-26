@@ -2,7 +2,7 @@ const express=require("express");
 const { Mongoose } = require("mongoose");
 const userModel=require("../models/userModel")
 const jwt=require("jsonwebtoken");
- const {JWT_KEY, JWT_TOKEN}= require("../secret") || process.env 
+ const {JWT_KEY, JWT_TOKEN}=process.env || require("../secret") 
 const authRouter=express.Router();
 const bcrypt = require("bcrypt");
 // bcrypt is npm package used for security reasons used to store password by hashing.
