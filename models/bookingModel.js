@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-let {APP_PASSWORD} =require("../secret") || process.env ;
+let {APP_PASSWORD} =process.env || require("../secret") ;
 let DBLink=`mongodb+srv://admin:${APP_PASSWORD}@cluster0.utwxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 // connection form.
 mongoose.connect(DBLink).then(function(db){

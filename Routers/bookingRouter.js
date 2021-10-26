@@ -6,7 +6,7 @@ const reviewModel=require("../models/reviewModel")
 const userModel=require("../models/userModel")
 const factory=require("./externalServices/factory")
 const Razorpay=require('razorpay')
-const {KEY_ID,KEY_SECRET}= require("../secret")
+const {KEY_ID,KEY_SECRET}= process.env || require("../secret")
 // console.log(KEY_ID);
 // console.log(KEY_SECRET);
 var razorpay = new Razorpay({

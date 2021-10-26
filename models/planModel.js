@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const emailValidator=require("email-validator")
 // import {DBLink} from "../secret"
-const {APP_PASSWORD}=require("../secret") || process.env 
+const {APP_PASSWORD}=process.env || require("../secret")
 let DBLink=`mongodb+srv://admin:${APP_PASSWORD}@cluster0.utwxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 // let {DBLink} =require("../secret");
 // connection form.
