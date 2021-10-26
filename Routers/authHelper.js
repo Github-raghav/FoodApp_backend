@@ -1,5 +1,5 @@
 const jwt=require("jsonwebtoken");
-const {JWT_KEY}=require("../secret")
+const {JWT_KEY}= require("../secret") || process.env 
 function protectRoute(req,res,next){
     // let flag=req.cookie.test;
     try{

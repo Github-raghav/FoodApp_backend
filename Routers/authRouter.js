@@ -2,7 +2,7 @@ const express=require("express");
 const { Mongoose } = require("mongoose");
 const userModel=require("../models/userModel")
 const jwt=require("jsonwebtoken");
- const {JWT_KEY, JWT_TOKEN}=require("../secret")
+ const {JWT_KEY, JWT_TOKEN}= require("../secret") || process.env 
 const authRouter=express.Router();
 const bcrypt = require("bcrypt");
 // bcrypt is npm package used for security reasons used to store password by hashing.
@@ -50,12 +50,15 @@ function setCreatedAt(req,res,next){
              
              try{
             let {email,password}=req.body;
+            console.log(req.email);
             // if(req.body.email){
                 console.log(email);
             let user=await userModel.findOne({email})
             
                if(user){
                    let areEqual=await bcrypt.compare(password,user.password)
+                   console.log(areEqual);
+                //    console.log(user.password);
                    if(areEqual){
                     // creating jsonwebtoken.
                     //    header

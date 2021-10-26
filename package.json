@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app1.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.6",
     "nodemailer": "^6.6.5",
-    "razorpay": "^2.0.7"
+    "razorpay": "^2.0.7",
+    "xss-clean": "^0.1.1"
   }
 }

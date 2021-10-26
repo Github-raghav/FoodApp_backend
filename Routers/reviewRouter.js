@@ -28,7 +28,8 @@ const createReview=async function(req,res){
     //saving the plan
     await plan.save();
     res.status(200).json({
-        message:err.message
+        message:"review created",
+        review:review
     })
     }
     catch(err){
@@ -43,7 +44,7 @@ const deleteReview=async function(req,res){
     let planId=review.plan;
     let plan=await planModel.findById(planId);
     let idxOfReview=plan.reviews.indexof(review["_id"]);
-    plan.review.slice(idxOfReview,1);
+    plan.review.splice(idxOfReview,1);
     await plan.save();
     res.status(200).json({
         message:"review deleted",
@@ -55,6 +56,7 @@ const deleteReview=async function(req,res){
     })
     }
 }
+
 const getReview=factory.getElements(ReviewModel);
 // const deleteReview=factory.deleteElements(ReviewModel);
 const updateReview=factory.updateElements(ReviewModel);
@@ -71,21 +73,5 @@ ReviewRouter
          .route("/")
          .get(getReview)
          .post(protectRoute,createReview)          
-ReviewRouter.route("/top3plans").get(Top3Plans);        
 
-async function Top3Plans(){
-    try{
-const reviews=await ReviewModel.find().limit(3).sort({
-    rating:-1
-})
-  res.status(201).json({
-      reviews,
-     message:"Reviews"
-  })
-    }catch(err){
-    res.status(400).json({
-        message:err.message
-    })
-    }
-}
          module.exports=ReviewRouter;

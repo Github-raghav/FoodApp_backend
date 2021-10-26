@@ -33,8 +33,8 @@ module.exports.getElements=function(ElementModel){
             console.log(req.query);
             let ans;
             //query
-            if(req.query.myquery){
-                 ans=JSON.parse(req.query.myquery);
+            if(req.query.myQuery){
+                 ans=JSON.parse(req.query.myQuery);
 
             }else{
                ans=ElementModel.find(); // find agr empty ho toh sara return krta h
@@ -45,11 +45,15 @@ module.exports.getElements=function(ElementModel){
             }
             //select
             if(req.query.select){
-            let params=req.query.split("%").join(" ");
+            let params=req.query.select.split("%").join(" ");
             ans=ans.select(params);
             }
-        //  if(req.query.page && req.query.limit){
-              
+            //paginate
+        //  if(req.query.page && req.query.limit){ 
+             let page=Number(req.query.page) || 1;
+             let limit=Number(req.query.limit) || 3;
+             let toSkip=(page-1)*limit;
+              ans=ans.skip(toSkip).limit(limit);
         //  }
     //     let plansPromise=await ElementModel.find(ans);
     //     let sortField=req.query.sort
@@ -59,10 +63,6 @@ module.exports.getElements=function(ElementModel){
     //    let result=await filteredQuery;
         //pagination.
         //skip and limit 
-        let page=Number(req.query.page) || 1;
-        let limit=Number(req.query.limit) || 3;
-        let toSkip=(page-1)*limit;
-         ans=ans.skip(toSkip).limit(limit);
         let result=  await ans;
         res.status(200).json({
             message:"list of all the plans",
